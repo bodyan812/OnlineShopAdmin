@@ -1,0 +1,38 @@
+{% if field.value %}
+    <div class="field-vich-file">
+        {% if field.value.filePath %}
+            <div class="current-file">
+                <span class="text-muted">Текущий файл:</span>
+                <a href="{{ asset('uploads/media/' ~ field.value.filePath) }}" target="_blank" class="download-link">
+                    {{ field.value.title }} ({{ field.value.fileType }})
+                </a>
+            </div>
+        {% endif %}
+
+        <div class="file-input-container">
+            {{ form_widget(form.file, {'attr': {'class': 'form-control-file'}}) }}
+        </div>
+    </div>
+{% else %}
+    {{ form_widget(form.file, {'attr': {'class': 'form-control-file'}}) }}
+{% endif %}
+
+<style>
+    .field-vich-file {
+        margin-bottom: 1rem;
+    }
+    .current-file {
+        margin-bottom: 0.5rem;
+        font-size: 0.875rem;
+    }
+    .download-link {
+        color: #0066cc;
+        margin-left: 0.5rem;
+    }
+    .download-link:hover {
+        text-decoration: underline;
+    }
+    .file-input-container {
+        margin-top: 0.5rem;
+    }
+</style>

@@ -1,0 +1,27 @@
+# translations/EasyAdminBundle.ru.yaml
+easy_admin:
+    action.new: 'Создать'
+    action.edit: 'Редактировать'
+    action.delete: 'Удалить'
+    action.save: 'Сохранить'
+    action.save_and_continue: 'Сохранить и продолжить'
+    action.save_and_return: 'Сохранить и вернуться'
+    action.search: 'Поиск'
+    action.list: 'Список'
+    action.deselect: 'Снять выделение'
+    action.back: 'Назад'
+
+    dashboard: 'Панель управления'
+    listing.page_title: 'Список %entity_label%'
+    detail.page_title: '%entity_label% (#%entity_id%)'
+    new.page_title: 'Создать %entity_label%'
+    edit.page_title: 'Редактировать %entity_label% (#%entity_id%)'
+
+    delete_modal.title: 'Удалить этот элемент?'
+    delete_modal.content: 'Вы уверены, что хотите удалить этот элемент? Это действие нельзя отменить.'
+    delete_modal.action: 'Удалить'
+
+    paginator.first: 'Первая'
+    paginator.previous: 'Предыдущая'
+    paginator.next: 'Следующая'
+    paginator.last: 'Последняя'
