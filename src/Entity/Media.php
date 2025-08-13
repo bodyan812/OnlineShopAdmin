@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
+use Symfony\Component\Serializer\Annotation\Ignore;
 use App\Repository\MediaRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
@@ -14,38 +16,47 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Table(name: 'media')]
 class Media
 {
+    const TYPE_IMAGE = 'image';
+    const TYPE_VIDEO = 'video';
+    const TYPE_DOCUMENT = 'document';
+    const TYPE_OTHER = 'other';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['veteran:item'])]
+    #[Groups(['product:read', 'category:read'])]
     private string $title;
 
     #[ORM\Column(type: 'text', nullable: true)]
-    #[Groups(['veteran:item'])]
+    #[Groups(['product:read', 'category:read'])]
     private ?string $description = null;
 
     #[Vich\UploadableField(mapping: "media_file", fileNameProperty: "filePath")]
     #[Assert\NotNull(message: "Пожалуйста, загрузите файл")]
+    #[Ignore]
     private ?File $file = null;
 
     #[ORM\Column(type: 'string', length: 255)]
     private string $filePath;
 
     #[ORM\Column(type: 'string', length: 50)]
+    #[Groups(['product:read', 'category:read'])]
     private string $fileType;
 
-    #[ORM\ManyToOne(targetEntity: Veteran::class, inversedBy: 'media')]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?Veteran $veteran = null;
+    #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: 'media')]
+    private ?Product $product = null;
+
+    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'image')]
+    private ?Category $category = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
-    #[Groups(['veteran:item'])]
+
     public function getWebPath(): string
     {
         return 'uploads/media/' . $this->filePath;
@@ -94,10 +105,6 @@ class Media
         return $this;
     }
 
-    public function getVeteran(): Veteran
-    {
-        return $this->veteran;
-    }
 
     public function setFile(?File $file = null): void
     {
@@ -137,11 +144,25 @@ class Media
         return $this->filePath;
     }
 
-
-
-    public function setVeteran(?Veteran $veteran): self
+    public function getProduct(): ?Product
     {
-        $this->veteran = $veteran;
+        return $this->product;
+    }
+
+    public function setProduct(?Product $product): self
+    {
+        $this->product = $product;
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): self
+    {
+        $this->category = $category;
         return $this;
     }
 }
