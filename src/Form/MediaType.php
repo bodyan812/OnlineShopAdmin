@@ -17,7 +17,7 @@ class MediaType extends AbstractType
                 'label' => 'Заголовок',
                 'required' => false,
             ])
-            ->add('file', VichFileType::class, [
+            ->add('file', VichFileType::class, [ // Вернуть оригинальное имя
                 'label' => 'Файл',
                 'required' => true,
                 'allow_delete' => false,

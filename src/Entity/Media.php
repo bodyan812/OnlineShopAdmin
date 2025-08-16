@@ -52,6 +52,14 @@ class Media
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'image')]
     private ?Category $category = null;
 
+    #[Vich\UploadableField(mapping: "media_file", fileNameProperty: "filePath")]
+    #[Ignore]
+    private ?File $mediaFileFile = null;
+
+    #[Vich\UploadableField(mapping: "media_file", fileNameProperty: "filePath")]
+    #[Ignore]
+    private ?File $mediaFile = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -168,5 +176,23 @@ class Media
     {
         $this->category = $category;
         return $this;
+    }
+    public function getMediaFileFile(): ?File
+    {
+        return $this->file;
+    }
+
+    public function setMediaFileFile(?File $file = null): void
+    {
+        $this->setFile($file);
+    }
+    public function getMediaFile(): ?File
+    {
+        return $this->file;
+    }
+
+    public function setMediaFile(?File $file = null): void
+    {
+        $this->setFile($file);
     }
 }
