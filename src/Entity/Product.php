@@ -9,8 +9,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product
+
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -29,7 +31,12 @@ class Product
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'products')]
     private ?Category $category = null;
 
-    #[ORM\OneToMany(targetEntity: Media::class, mappedBy: 'product')]
+    #[ORM\OneToMany(
+        targetEntity: Media::class,
+        mappedBy: 'product',
+        cascade: ['persist', 'remove'],
+        orphanRemoval: true
+    )]
     #[Ignore]
     private Collection $media;
 
@@ -38,6 +45,10 @@ class Product
         $this->media = new ArrayCollection();
     }
 
+    public function __toString(): string
+    {
+        return $this->name;
+    }
     // ... геттеры/сеттеры ...
 
     public function getId(): ?int
@@ -107,19 +118,12 @@ class Product
             $this->media->add($medium);
             $medium->setProduct($this);
         }
-
         return $this;
     }
 
     public function removeMedium(Media $medium): static
     {
-        if ($this->media->removeElement($medium)) {
-            // set the owning side to null (unless already changed)
-            if ($medium->getProduct() === $this) {
-                $medium->setProduct(null);
-            }
-        }
-
+        $this->media->removeElement($medium);
         return $this;
     }
 }

@@ -2,11 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\CategoryRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use AllowDynamicProperties;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\CategoryRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
+#[AllowDynamicProperties] #[Vich\Uploadable]
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 class Category
 {
@@ -24,11 +28,15 @@ class Category
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
     private Collection $children;
 
-    #[ORM\OneToOne(targetEntity: Media::class, cascade: ['persist', 'remove'])]
-    private ?Media $image = null;
-
     #[ORM\OneToMany(targetEntity: Product::class, mappedBy: 'category')]
     private Collection $products;
+
+    // Добавляем поля для загрузки изображений
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $imageName = null;
+
+    #[Vich\UploadableField(mapping: 'category_image', fileNameProperty: 'imageName')]
+    private ?File $imageFile = null;
 
     public function __construct()
     {
@@ -36,7 +44,35 @@ class Category
         $this->products = new ArrayCollection();
     }
 
-    // ... геттеры/сеттеры ...
+    public function __toString(): string
+    {
+        return $this->name;
+    }
+    // Добавляем геттеры и сеттеры для изображений
+    public function setImageFile(?File $imageFile = null): void
+    {
+        $this->imageFile = $imageFile;
+    }
+
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
+    public function setImageName(?string $imageName): void
+    {
+        $this->imageName = $imageName;
+    }
+
+    public function getImageName(): ?string
+    {
+        return $this->imageName;
+    }
+
+    public function getImagePath(): ?string
+    {
+        return $this->imageName ? 'uploads/categories/'.$this->imageName : null;
+    }
 
     public function getId(): ?int
     {

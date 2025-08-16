@@ -26,7 +26,14 @@ class JWTController extends AbstractController
             return new JsonResponse(['error' => 'Invalid credentials'], 401);
         }
 
-        return new JsonResponse(['token' => $JWTManager->create($user)]);
+        return new JsonResponse([
+            'token' => $JWTManager->create($user),
+            'user' => [
+                'id' => $user->getId(),
+                'username' => $user->getUsername(),
+                'roles' => $user->getRoles()
+            ]
+        ]);
     }
 
     #[Route('/api/register', name: 'api_register', methods: ['POST'])]

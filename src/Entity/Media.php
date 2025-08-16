@@ -57,6 +57,10 @@ class Media
         return $this->id;
     }
 
+    public function __toString(): string
+    {
+        return $this->title ?: 'Media #' . $this->id;
+    }
     public function getWebPath(): string
     {
         return 'uploads/media/' . $this->filePath;

@@ -13,31 +13,39 @@ class CategoryRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
+        // Исправляем конструктор - передаем класс сущности
         parent::__construct($registry, Category::class);
     }
 
-    //    /**
-    //     * @return Category[] Returns an array of Category objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function getTree(): array
+    {
+        $categories = $this->findBy([], ['name' => 'ASC']);
+        $tree = [];
 
-    //    public function findOneBySomeField($value): ?Category
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        foreach ($categories as $category) {
+            if (!$category->getParent()) {
+                $tree[] = $this->buildTree($category, $categories);
+            }
+        }
+
+        return $tree;
+    }
+
+    private function buildTree(Category $parent, array $categories): array
+    {
+        $branch = [
+            'id' => $parent->getId(),
+            'name' => $parent->getName(),
+            'image' => $parent->getImageName(),
+            'children' => []
+        ];
+
+        foreach ($categories as $category) {
+            if ($category->getParent() && $category->getParent()->getId() === $parent->getId()) {
+                $branch['children'][] = $this->buildTree($category, $categories);
+            }
+        }
+
+        return $branch;
+    }
 }
