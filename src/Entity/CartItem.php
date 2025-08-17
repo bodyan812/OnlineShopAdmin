@@ -4,13 +4,32 @@ namespace App\Entity;
 
 use App\Repository\CartItemRepository;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Delete;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CartItemRepository::class)]
+#[ApiResource(
+    operations: [
+        new Post(
+            uriTemplate: '/cart/add',
+            security: "is_granted('ROLE_USER')"
+        ),
+        new Delete(
+            uriTemplate: '/cart/remove/{id}',
+            security: "is_granted('ROLE_USER')"
+        )
+    ],
+    denormalizationContext: ['groups' => ['cart:write']],
+    normalizationContext: ['groups' => ['cart:read']]
+)]
 class CartItem
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(['cart:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Cart::class, inversedBy: 'items')]
@@ -19,9 +38,11 @@ class CartItem
 
     #[ORM\ManyToOne(targetEntity: Product::class)]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['cart:read'])]
     private Product $product;
 
     #[ORM\Column(type: 'integer')]
+    #[Groups(['cart:read'])]
     private int $quantity = 1;
 
     // ... геттеры/сеттеры ...

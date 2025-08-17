@@ -6,14 +6,10 @@ use App\Entity\Category;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @extends ServiceEntityRepository<Category>
- */
 class CategoryRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        // Исправляем конструктор - передаем класс сущности
         parent::__construct($registry, Category::class);
     }
 
@@ -36,7 +32,7 @@ class CategoryRepository extends ServiceEntityRepository
         $branch = [
             'id' => $parent->getId(),
             'name' => $parent->getName(),
-            'image' => $parent->getImageName(),
+            'image' => $parent->getImagePath(),
             'children' => []
         ];
 

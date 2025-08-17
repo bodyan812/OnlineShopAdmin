@@ -3,36 +3,53 @@
 namespace App\Entity;
 
 use AllowDynamicProperties;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\CategoryRepository;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use ApiPlatform\Metadata\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[AllowDynamicProperties] #[Vich\Uploadable]
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
+#[ApiResource(
+    normalizationContext: ['groups' => ['category:read']],
+    operations: [
+        new GetCollection(),
+        new Get(),
+        new Post(security: "is_granted('ROLE_ADMIN')"),
+    ]
+)]
 class Category
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column]
+    #[Groups(['category:read', 'product:read'])]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(length: 255)]
+    #[Groups(['category:read', 'product:read'])]
     private string $name;
 
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
+    #[Groups(['category:read'])]
     private ?Category $parent = null;
 
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
+    #[Groups(['category:read'])]
     private Collection $children;
 
     #[ORM\OneToMany(targetEntity: Product::class, mappedBy: 'category')]
     private Collection $products;
 
-    // Добавляем поля для загрузки изображений
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['category:read'])]
     private ?string $imageName = null;
 
     #[Vich\UploadableField(mapping: 'category_image', fileNameProperty: 'imageName')]
@@ -71,7 +88,7 @@ class Category
 
     public function getImagePath(): ?string
     {
-        return $this->imageName ? 'uploads/categories/'.$this->imageName : null;
+        return $this->imageName ? '/uploads/categories/'.$this->imageName : null;
     }
 
     public function getId(): ?int

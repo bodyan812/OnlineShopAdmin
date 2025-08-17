@@ -9,6 +9,7 @@
  use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
  use Symfony\Component\Routing\Annotation\Route;
  use Doctrine\ORM\EntityManagerInterface;
+ 
 
  class AuthController extends AbstractController
  {

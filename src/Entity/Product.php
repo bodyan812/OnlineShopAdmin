@@ -2,35 +2,63 @@
 
 namespace App\Entity;
 
-use Doctrine\DBAL\Types\Types;
-use Symfony\Component\Serializer\Annotation\Ignore;
-use App\Repository\ProductRepository;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\Ignore;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[Vich\Uploadable]
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
-
+#[ApiResource(
+    normalizationContext: ['groups' => ['product:read']],
+    operations: [
+        new GetCollection(
+            paginationEnabled: true,
+            paginationItemsPerPage: 10,
+            security: "is_granted('PUBLIC_ACCESS')"
+        ),
+        new Get(security: "is_granted('PUBLIC_ACCESS')"),
+        new Post(security: "is_granted('ROLE_ADMIN')"),
+        new Put(security: "is_granted('ROLE_ADMIN')"),
+        new Delete(security: "is_granted('ROLE_ADMIN')")
+    ]
+)]
+#[ApiFilter(SearchFilter::class, properties: [
+    'category' => 'exact',
+    'name' => 'partial'
+])]
 class Product
-
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column]
+    #[Groups(['product:read', 'cart:read'])]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(length: 255)]
+    #[Groups(['product:read', 'cart:read'])]
     private string $name;
 
     #[ORM\Column(type: 'text', nullable: true)]
+    #[Groups(['product:read'])]
     private ?string $description = null;
 
-    #[ORM\Column(type: 'float')]
+    #[ORM\Column]
+    #[Groups(['product:read', 'cart:read'])]
     private float $price;
 
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'products')]
+    #[Groups(['product:read'])]
     private ?Category $category = null;
 
     #[ORM\OneToMany(
@@ -39,7 +67,7 @@ class Product
         cascade: ['persist', 'remove'],
         orphanRemoval: true
     )]
-    #[Ignore]
+    #[Groups(['product:read'])]
     private Collection $media;
 
     public function __construct()
@@ -47,11 +75,11 @@ class Product
         $this->media = new ArrayCollection();
     }
 
+
     public function __toString(): string
     {
         return $this->name;
     }
-    // ... геттеры/сеттеры ...
 
     public function getId(): ?int
     {
@@ -122,7 +150,14 @@ class Product
         }
         return $this;
     }
-
+    #[Groups(['product:read', 'cart:read'])]
+    public function getMainImage(): ?string
+    {
+        if ($this->media->isEmpty()) {
+            return null;
+        }
+        return $this->media->first()->getWebPath();
+    }
     public function removeMedium(Media $medium): static
     {
         $this->media->removeElement($medium);

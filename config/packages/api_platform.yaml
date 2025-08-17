@@ -1,12 +1,18 @@
 api_platform:
+    title: 'E-Shop API'
+    description: 'API for E-Shop application'
+    version: '1.0.0'
     mapping:
         paths: ['%kernel.project_dir%/src/Entity']
-    formats:
-        jsonld: ['application/ld+json']
-        json: ['application/json']
+    patch_formats:
+        json: ['application/merge-patch+json']
     swagger:
         versions: [3]
         api_keys:
-            JWT:
+            jwt:
                 name: Authorization
                 type: header
+    defaults:
+        stateless: true
+        security: "is_granted('ROLE_USER')"
+        security_message: 'JWT Token not found or invalid'
