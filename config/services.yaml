@@ -17,6 +17,6 @@ services:
         tags:
             - { name: serializer.normalizer, priority: 10 }
 
-    App\Security\JWTDecoder:
-        arguments:
-            $jwsProvider: '@lexik_jwt_authentication.jws_provider'
+#    App\Security\JWTDecoder:
+#        arguments:
+#            $jwsProvider: '@lexik_jwt_authentication.jws_provider'

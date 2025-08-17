@@ -33,13 +33,13 @@ security:
         api_docs:
             pattern: ^/api/docs
             stateless: true
-            security: false  # Разрешаем доступ без аутентификации
+            security: false
 
         api:
             pattern: ^/api
             stateless: true
             provider: app_user_provider
-            jwt: ~
+            jwt: ~  # Используем стандартную конфигурацию JWT
 
     access_control:
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
@@ -47,4 +47,3 @@ security:
         - { path: ^/api/docs, roles: PUBLIC_ACCESS }
         - { path: ^/api/categories/tree, roles: PUBLIC_ACCESS }
         - { path: ^/api/products, roles: PUBLIC_ACCESS, methods: [GET] }
-
