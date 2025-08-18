@@ -35,12 +35,12 @@ class Media
     private ?string $description = null;
 
     #[Vich\UploadableField(mapping: "media_file", fileNameProperty: "filePath")]
-    #[Assert\NotNull(message: "Пожалуйста, загрузите файл")]
+    #[Assert\NotNull(message: "Пожалуйста, загрузите файл", groups: ['create'])]
     #[Ignore]
     private ?File $file = null;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    private string $filePath;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $filePath = null;
 
     #[ORM\Column(type: 'string', length: 50)]
     #[Groups(['product:read', 'category:read'])]
@@ -95,12 +95,12 @@ class Media
         return $this;
     }
 
-    public function getFilePath(): string
+    public function getFilePath(): ?string
     {
         return $this->filePath;
     }
 
-    public function setFilePath(string $filePath): self
+    public function setFilePath(?string $filePath): self
     {
         $this->filePath = $filePath;
         return $this;

@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
+use App\Repository\ProductRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -28,9 +29,6 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
             security: "is_granted('PUBLIC_ACCESS')"
         ),
         new Get(security: "is_granted('PUBLIC_ACCESS')"),
-        new Post(security: "is_granted('ROLE_ADMIN')"),
-        new Put(security: "is_granted('ROLE_ADMIN')"),
-        new Delete(security: "is_granted('ROLE_ADMIN')")
     ]
 )]
 #[ApiFilter(SearchFilter::class, properties: [
@@ -64,8 +62,8 @@ class Product
     #[ORM\OneToMany(
         targetEntity: Media::class,
         mappedBy: 'product',
-        cascade: ['persist', 'remove'],
-        orphanRemoval: true
+        cascade: ['persist'],
+        orphanRemoval: false
     )]
     #[Groups(['product:read'])]
     private Collection $media;
@@ -74,7 +72,6 @@ class Product
     {
         $this->media = new ArrayCollection();
     }
-
 
     public function __toString(): string
     {
@@ -160,7 +157,11 @@ class Product
     }
     public function removeMedium(Media $medium): static
     {
-        $this->media->removeElement($medium);
+        if ($this->media->removeElement($medium)) {
+            if ($medium->getProduct() === $this) {
+                $medium->setProduct(null);
+            }
+        }
         return $this;
     }
 }

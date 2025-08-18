@@ -20,9 +20,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(
     normalizationContext: ['groups' => ['category:read']],
     operations: [
-        new GetCollection(),
-        new Get(),
-        new Post(security: "is_granted('ROLE_ADMIN')"),
+        new GetCollection(security: "is_granted('PUBLIC_ACCESS')"),
+        new Get(security: "is_granted('PUBLIC_ACCESS')"),
     ]
 )]
 class Category
@@ -65,7 +64,7 @@ class Category
     {
         return $this->name;
     }
-    // Добавляем геттеры и сеттеры для изображений
+
     public function setImageFile(?File $imageFile = null): void
     {
         $this->imageFile = $imageFile;

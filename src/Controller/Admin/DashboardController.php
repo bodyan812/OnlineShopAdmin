@@ -23,9 +23,8 @@ class DashboardController extends AbstractDashboardController
 
     public function index(): Response
     {
-        // Перенаправляем на страницу управления товарами по умолчанию
         $url = $this->adminUrlGenerator
-            ->setController(ProductCrudController::class) // Предполагается, что у вас есть ProductCrudController
+            ->setController(ProductCrudController::class)
             ->generateUrl();
 
         return $this->redirect($url);

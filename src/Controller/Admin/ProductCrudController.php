@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Controller\Admin\Field\VichGalleryField;
 use App\Entity\Product;
 use App\Form\MediaType;
+use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
@@ -12,7 +13,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class ProductCrudController extends AbstractCrudController
@@ -45,5 +45,25 @@ class ProductCrudController extends AbstractCrudController
         }
 
         return $fields;
+    }
+
+    public function deleteEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        if ($entityInstance instanceof Product) {
+            // Удаляем связанные медиа перед удалением продукта
+            $mediaItems = $entityInstance->getMedia()->toArray();
+
+            foreach ($mediaItems as $media) {
+                // Отсоединяем медиа от продукта
+                $media->setProduct(null);
+                $entityManager->remove($media);
+            }
+
+            // Сразу выполняем удаление медиа
+            $entityManager->flush();
+        }
+
+        // Вызываем родительский метод для удаления продукта
+        parent::deleteEntity($entityManager, $entityInstance);
     }
 }

@@ -34,7 +34,6 @@ class JWTDecoder implements JWTEncoderInterface
                 return false;
             }
 
-            // Проверка времени жизни токена
             $currentTime = time();
             if (isset($payload['exp']) && $payload['exp'] < $currentTime) {
                 return false;

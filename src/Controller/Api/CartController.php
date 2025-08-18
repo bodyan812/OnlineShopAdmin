@@ -25,7 +25,6 @@ class CartController extends AbstractController
 
         $cart = $user->getCart();
 
-        // Создаем новую корзину, если её нет
         if (!$cart) {
             $cart = new Cart();
             $cart->setUser($user);
@@ -66,7 +65,6 @@ class CartController extends AbstractController
 
         $cart = $user->getCart();
 
-        // Создаем новую корзину, если её нет
         if (!$cart) {
             $cart = new Cart();
             $cart->setUser($user);

@@ -45,8 +45,6 @@ class CartItem
     #[Groups(['cart:read'])]
     private int $quantity = 1;
 
-    // ... геттеры/сеттеры ...
-
     public function getId(): ?int
     {
         return $this->id;
