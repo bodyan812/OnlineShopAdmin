@@ -19,13 +19,14 @@ class ProductNormalizer implements NormalizerInterface, NormalizerAwareInterface
     public function normalize($object, string $format = null, array $context = []): array
     {
         /* @var Product $object */
-        $images = [];
-        foreach ($object->getMedia() as $media) {
-            $images[] = $this->storage->resolveUri($media, 'file');
+        $mainImage = null;
+        $firstMedia = $object->getMedia()->first();
+        if ($firstMedia) {
+            $mainImage = $this->storage->resolveUri($firstMedia, 'file');
         }
 
         $data = $this->normalizer->normalize($object, $format, $context);
-        $data['images'] = $images;
+        $data['main_image'] = $mainImage; // Добавляем только главное изображение
 
         return $data;
     }

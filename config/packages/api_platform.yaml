@@ -16,3 +16,6 @@ api_platform:
         stateless: true
         security: "is_granted('ROLE_USER')"
         security_message: 'JWT Token not found or invalid'
+        normalization_context:
+            enable_max_depth: true
+            max_depth: 2

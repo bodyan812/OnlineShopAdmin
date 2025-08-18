@@ -5,7 +5,7 @@ namespace App\Repository;
 use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-
+use Doctrine\ORM\Tools\Pagination\Paginator;
 /**
  * @extends ServiceEntityRepository<Product>
  */
@@ -16,28 +16,21 @@ class ProductRepository extends ServiceEntityRepository
         parent::__construct($registry, Product::class);
     }
 
-    //    /**
-    //     * @return Product[] Returns an array of Product objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('p.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function findPaginated(int $page, int $limit): \Doctrine\ORM\Tools\Pagination\Paginator
+    {
+        $query = $this->createQueryBuilder('p')
+            ->addSelect('c', 'm')
+            ->leftJoin('p.category', 'c')
+            ->leftJoin('p.media', 'm')
+            ->orderBy('p.id', 'ASC')
+            ->getQuery();
 
-    //    public function findOneBySomeField($value): ?Product
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        $paginator = new \Doctrine\ORM\Tools\Pagination\Paginator($query);
+        $paginator
+            ->getQuery()
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit);
+
+        return $paginator;
+    }
 }

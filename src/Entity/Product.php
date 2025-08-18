@@ -26,7 +26,8 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
         new GetCollection(
             paginationEnabled: true,
             paginationItemsPerPage: 10,
-            security: "is_granted('PUBLIC_ACCESS')"
+            security: "is_granted('PUBLIC_ACCESS')",
+            name: 'api_products_collection'
         ),
         new Get(security: "is_granted('PUBLIC_ACCESS')"),
     ]
@@ -147,7 +148,6 @@ class Product
         }
         return $this;
     }
-    #[Groups(['product:read', 'cart:read'])]
     public function getMainImage(): ?string
     {
         if ($this->media->isEmpty()) {
