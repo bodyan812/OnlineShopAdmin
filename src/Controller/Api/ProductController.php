@@ -1,5 +1,4 @@
 <?php
-// src/Controller/Api/ProductController.php
 namespace App\Controller\Api;
 
 use App\Repository\ProductRepository;
@@ -16,8 +15,10 @@ class ProductController extends AbstractController
     {
         $page = $request->query->getInt('page', 1);
         $limit = 10;
+        $categoryId = $request->query->getInt('category');
+        $name = $request->query->get('name');
 
-        $paginator = $repository->findPaginated($page, $limit);
+        $paginator = $repository->findPaginated($page, $limit, $categoryId, $name);
         $products = [];
 
         foreach ($paginator as $product) {

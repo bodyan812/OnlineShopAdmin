@@ -19,3 +19,12 @@ api_platform:
         normalization_context:
             enable_max_depth: true
             max_depth: 2
+
+    formats:
+        json: [ 'application/json' ]
+        multipart: [ 'multipart/form-data' ]
+        #        jsonld: [ 'application/ld+json' ]
+        #        jsonhal: [ 'application/hal+json' ]
+        #        jsonapi: [ 'application/vnd.api+json' ]
+        #        csv: [ 'text/csv' ]
+        html: [ 'text/html' ]

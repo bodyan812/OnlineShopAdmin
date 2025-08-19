@@ -22,6 +22,18 @@ class ProductCrudController extends AbstractCrudController
         return Product::class;
     }
 
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            ->setEntityLabelInSingular('товар')
+            ->setEntityLabelInPlural('Товары')
+            // Дополнительные настройки, если нужно
+            ->setPageTitle('index', 'Товары')
+            ->setPageTitle('new', 'Создать товар')
+            ->setPageTitle('detail', fn(Product $product) => (string) $product->getName())
+            ->setPageTitle('edit', fn(Product $product) => sprintf('Редактировать <b>%s</b>', $product->getName()));
+    }
+
     public function configureFields(string $pageName): iterable
     {
         $fields = [
@@ -41,7 +53,7 @@ class ProductCrudController extends AbstractCrudController
                 ->allowAdd()
                 ->allowDelete();
         } else {
-            $fields[] = VichGalleryField::new('media.file', 'Галерея');
+            $fields[] = VichGalleryField::new('media.mediaFileFile', 'Галерея');
         }
 
         return $fields;

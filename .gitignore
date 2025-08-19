@@ -8,7 +8,10 @@
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
-
+/public/uploads/categories
+/public/uploads/media
+/public/uploads/photos
+/public/uploads/products
 ###> phpunit/phpunit ###
 /phpunit.xml
 /.phpunit.cache/

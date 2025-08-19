@@ -8,13 +8,15 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Delete;
 use Symfony\Component\Serializer\Annotation\Groups;
-
+use App\Dto\CartAddRequest;
 #[ORM\Entity(repositoryClass: CartItemRepository::class)]
 #[ApiResource(
     operations: [
         new Post(
             uriTemplate: '/cart/add',
-            security: "is_granted('ROLE_USER')"
+            security: "is_granted('ROLE_USER')",
+            input: CartAddRequest::class,
+            messenger: true
         ),
         new Delete(
             uriTemplate: '/cart/remove/{id}',
