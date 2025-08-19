@@ -5,18 +5,41 @@ namespace App\Entity;
 use App\Repository\CartItemRepository;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Delete;
 use Symfony\Component\Serializer\Annotation\Groups;
-use App\Dto\CartAddRequest;
+use ApiPlatform\OpenApi\Model\Operation;
+use ApiPlatform\OpenApi\Model\RequestBody;
+use ApiPlatform\OpenApi\Model\MediaType;
+
 #[ORM\Entity(repositoryClass: CartItemRepository::class)]
 #[ApiResource(
     operations: [
+        new GetCollection(
+            uriTemplate: '/cart',
+            security: "is_granted('ROLE_USER')",
+            normalizationContext: ['groups' => ['cart:read']]
+        ),
         new Post(
             uriTemplate: '/cart/add',
             security: "is_granted('ROLE_USER')",
-            input: CartAddRequest::class,
-            messenger: true
+            openapi: new Operation(
+                requestBody: new RequestBody(
+                    content: new \ArrayObject([
+                        'application/json' => new MediaType(
+                            schema: new \ArrayObject([
+                                'type' => 'object',
+                                'properties' => new \ArrayObject([
+                                    'productId' => new \ArrayObject(['type' => 'integer', 'example' => 1]),
+                                    'quantity' => new \ArrayObject(['type' => 'integer', 'example' => 1])
+                                ])
+                            ]),
+                            example: ['productId' => 1, 'quantity' => 2]
+                        )
+                    ])
+                )
+            )
         ),
         new Delete(
             uriTemplate: '/cart/remove/{id}',
