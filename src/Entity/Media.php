@@ -34,7 +34,7 @@ class Media
     #[Groups(['product:read', 'category:read'])]
     private ?string $description = null;
 
-    #[Vich\UploadableField(mapping: "media_file", fileNameProperty: "filePath")]
+    #[Vich\UploadableField(mapping: "product_media", fileNameProperty: "filePath")]
     #[Assert\NotNull(message: "Пожалуйста, загрузите файл", groups: ['create'])]
     #[Ignore]
     private ?File $file = null;
@@ -52,11 +52,11 @@ class Media
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'image')]
     private ?Category $category = null;
 
-    #[Vich\UploadableField(mapping: "media_file", fileNameProperty: "filePath")]
+    #[Vich\UploadableField(mapping: "product_media", fileNameProperty: "filePath")]
     #[Ignore]
     private ?File $mediaFileFile = null;
 
-    #[Vich\UploadableField(mapping: "media_file", fileNameProperty: "filePath")]
+    #[Vich\UploadableField(mapping: "product_media", fileNameProperty: "filePath")]
     #[Ignore]
     private ?File $mediaFile = null;
 

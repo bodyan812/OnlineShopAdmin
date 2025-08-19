@@ -4,18 +4,13 @@ vich_uploader:
 
 
     mappings:
-        media_file:
-            uri_prefix: /uploads/media
-            upload_destination: '%kernel.project_dir%/public/uploads/media'
+        product_media:
+            uri_prefix: /uploads/products
+            upload_destination: '%kernel.project_dir%/public/uploads/products'
             namer: Vich\UploaderBundle\Naming\OrignameNamer
             delete_on_remove: true
 
         category_image:
             uri_prefix: /uploads/categories
             upload_destination: '%kernel.project_dir%/public/uploads/categories'
-            namer: Vich\UploaderBundle\Naming\OrignameNamer
-
-        product_media:
-            uri_prefix: /uploads/products
-            upload_destination: '%kernel.project_dir%/public/uploads/products'
             namer: Vich\UploaderBundle\Naming\OrignameNamer

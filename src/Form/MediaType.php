@@ -17,11 +17,13 @@ class MediaType extends AbstractType
                 'label' => 'Заголовок',
                 'required' => false,
             ])
-            ->add('file', VichFileType::class, [ // Вернуть оригинальное имя
+            ->add('file', VichFileType::class, [
                 'label' => 'Файл',
-                'required' => true,
-                'allow_delete' => false,
-                'download_uri' => false,
+                'required' => false, // Важно: false для редактирования
+                'allow_delete' => true,
+                'download_uri' => true,
+                'download_label' => 'Скачать текущий файл',
+                'asset_helper' => true,
             ]);
     }
 

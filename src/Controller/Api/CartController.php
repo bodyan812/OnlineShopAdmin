@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-#[Route('/api/cart', name: 'api_cart_')]
+#[Route('/cart', name: 'api_cart_')]
 class CartController extends AbstractController
 {
     #[Route('', name: 'get', methods: ['GET'])]

@@ -41,7 +41,7 @@ class ProductCrudController extends AbstractCrudController
                 ->allowAdd()
                 ->allowDelete();
         } else {
-            $fields[] = VichGalleryField::new('media.mediaFile', 'Галерея');
+            $fields[] = VichGalleryField::new('media.file', 'Галерея');
         }
 
         return $fields;

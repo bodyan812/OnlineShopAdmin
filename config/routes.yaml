@@ -9,7 +9,3 @@ api_platform:
     type: api_platform
     prefix: /api
 
-custom_controllers:
-    resource: ../src/Controller/
-    type: attribute
-    prefix: /api

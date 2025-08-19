@@ -11,7 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ProductController extends AbstractController
 {
-    #[Route('/api/products', name: 'api_products_collection', methods: ['GET'])]
+    #[Route('/products', name: 'api_products_collection', methods: ['GET'])]
     public function index(Request $request, ProductRepository $repository): JsonResponse
     {
         $page = $request->query->getInt('page', 1);

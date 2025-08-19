@@ -12,7 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class AuthController extends AbstractController
 {
-    #[Route('/api/login', name: 'api_login', methods: ['POST'])]
+    #[Route('api/login', name: 'api_login', methods: ['POST'])]
     public function login(
         Request $request,
         JWTTokenManagerInterface $JWTManager,
@@ -36,7 +36,7 @@ class AuthController extends AbstractController
         ]);
     }
 
-    #[Route('/api/register', name: 'api_register', methods: ['POST'])]
+    #[Route('/register', name: 'api_register', methods: ['POST'])]
     public function register(
         Request $request,
         UserPasswordHasherInterface $passwordHasher,
@@ -59,7 +59,7 @@ class AuthController extends AbstractController
         return new JsonResponse(['message' => 'User created successfully'], 201);
     }
 
-    #[Route('/api/logout', name: 'api_logout', methods: ['POST'])]
+    #[Route('/logout', name: 'api_logout', methods: ['POST'])]
     public function logout(): JsonResponse
     {
         return new JsonResponse(['message' => 'Successfully logged out']);
