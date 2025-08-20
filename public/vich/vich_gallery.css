@@ -11,6 +11,9 @@
     cursor: pointer;
     position: relative;
 }
+.field-image .ea-lightbox-thumbnail img + div {
+    display: none;
+}
 
 @media (max-width: 1240px) {
     .gallery img {

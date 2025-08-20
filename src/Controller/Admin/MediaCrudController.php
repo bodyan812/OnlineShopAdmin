@@ -37,7 +37,7 @@ class MediaCrudController extends AbstractCrudController
             TextField::new('title', 'Заголовок'),
             TextareaField::new('description', 'Описание'),
             TextField::new('file', 'Файл')
-                ->setFormType(VichFileType::class)
+            ->setFormType(VichFileType::class)
                 ->setFormTypeOptions([
                     'allow_delete' => false,
                     'download_uri' => false,

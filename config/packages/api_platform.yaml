@@ -1,41 +1,24 @@
 api_platform:
-    # The title of the API.
-    title: 'API title'
-
-    # The description of the API.
-    description: 'API description'
-
-    # The version of the API.
-    version: '0.0.1'
-
-    collection:
-        pagination:
-            enabled: false
-
-    # Set this to false if you want Webby to disappear.
-    show_webby: false
-
-    # Enable the Swagger documentation and export.
-    enable_swagger: true
-
-    # Enable Swagger UI.
-    enable_swagger_ui: true
-
-    # Enable ReDoc.
-    enable_re_doc: false
-
-    # Enable the entrypoint.
-    enable_entrypoint: true
-
-    # Enable the docs.
-    enable_docs: true
-
-    # Enable the data collector and the WebProfilerBundle integration.
-    enable_profiler: true
-
-    oauth:
-        # To enable or disable OAuth.
-        enabled: false
+    title: 'E-Shop API'
+    description: 'API for E-Shop application'
+    version: '1.0.0'
+    mapping:
+        paths: ['%kernel.project_dir%/src/Entity']
+    patch_formats:
+        json: ['application/merge-patch+json']
+    swagger:
+        versions: [3]
+        api_keys:
+            jwt:
+                name: Authorization
+                type: header
+    defaults:
+        stateless: true
+        security: "is_granted('ROLE_USER')"
+        security_message: 'JWT Token not found or invalid'
+        normalization_context:
+            enable_max_depth: true
+            max_depth: 2
 
     formats:
         json: [ 'application/json' ]
@@ -45,19 +28,3 @@ api_platform:
         #        jsonapi: [ 'application/vnd.api+json' ]
         #        csv: [ 'text/csv' ]
         html: [ 'text/html' ]
-
-    defaults:
-        pagination_items_per_page: 25
-
-    mapping:
-        paths: [ '%kernel.project_dir%/src/Entity' ]
-
-    patch_formats:
-        json: [ 'application/merge-patch+json' ]
-
-    swagger:
-        versions: [ 3 ]
-#        api_keys:
-#            JWT:
-#                name: Authorization
-#                type: header

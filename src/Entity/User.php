@@ -3,13 +3,15 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'users')]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface, \JsonSerializable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -18,6 +20,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 180, unique: true)]
     private ?string $username = null;
+
+    #[ORM\OneToOne(targetEntity: Cart::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?Cart $cart = null;
 
     #[ORM\Column]
     private array $roles = [];
@@ -34,6 +39,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->id;
     }
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->id,
+            'username' => $this->username,
+            'roles' => $this->getRoles(),
+        ];
+    }
 
     public function getUsername(): ?string
     {
@@ -46,9 +59,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getUserIdentifier(): string
+    public function getCart(): ?Cart
     {
-        return (string) $this->username;
+        return $this->cart;
+    }
+
+    public function setCart(?Cart $cart): self
+    {
+        $this->cart = $cart;
+        if ($cart && $cart->getUser() !== $this) {
+            $cart->setUser($this);
+        }
+        return $this;
     }
 
     public function getRoles(): array
@@ -61,6 +83,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return array_unique($roles);
+    }
+
+    // Методы для JWT
+    public function getUserIdentifier(): string
+    {
+        return $this->username;
+    }
+
+    public function getSalt(): ?string
+    {
+        return null;
     }
 
     public function setRoles(array $roles): static
@@ -111,4 +144,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->plainPassword = null;
     }
+
+
 }
